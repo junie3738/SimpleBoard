@@ -55,7 +55,7 @@ public class SBDao {
 		try {
 			con = getCon();
 			ps = con.prepareStatement(query);
-			ps.setString(1, vo.getTilte());
+			ps.setString(1, vo.getTitle());
 			ps.setString(2, vo.getContent());
 			result = ps.executeUpdate();
 
