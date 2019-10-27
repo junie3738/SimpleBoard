@@ -1,6 +1,7 @@
 package com.kwon1.sb;
 
 import java.sql.*;
+import java.util.*;
 
 public class SBDao {
 
@@ -40,9 +41,12 @@ public class SBDao {
 				e.printStackTrace();
 			}
 		}
+		
+		
 
 	}
 
+	//글쓰기
 	public static int insertBoard(BoardVo vo) {
 		int result = 0;
 		String query = " INSERT INTO t_board " + " (title, content) " + " VALUES " + " (?, ?) ";
@@ -64,6 +68,38 @@ public class SBDao {
 
 		return result;
 
+	}
+	// 글 리스트 가져오기
+	public static List<BoardVo> getBoardList() {
+		List<BoardVo> list = new ArrayList();
+		
+		String query = " SELECT * FROM t_board " ;
+		
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			con = getCon();
+			ps = con.prepareStatement(query);
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				int i_board = rs.getInt("i_board");
+				String title = rs.getString("title");
+				String content = rs.getString("content");
+				String regDateTime = rs.getString("regdatetime");
+				
+				BoardVo vo = new BoardVo(i_board, title, content, regDateTime);
+				list.add(vo);
+			}
+			
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}finally {
+			
+
+		}
+		
+		return list;
 	}
 
 }
