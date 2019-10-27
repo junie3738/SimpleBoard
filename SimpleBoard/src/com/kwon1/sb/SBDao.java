@@ -40,8 +40,18 @@ public class SBDao {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-		}
-		
+		}		
+
+	}
+	private static void close(Connection con, PreparedStatement ps, ResultSet rs) {
+		if (rs != null) {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}				
+		close(con, ps);
 		
 
 	}
@@ -73,7 +83,7 @@ public class SBDao {
 	public static List<BoardVo> getBoardList() {
 		List<BoardVo> list = new ArrayList();
 		
-		String query = " SELECT * FROM t_board " ;
+		String query = " SELECT i_board, title, regdatetime FROM t_board " ;
 		
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -85,21 +95,49 @@ public class SBDao {
 			while(rs.next()) {
 				int i_board = rs.getInt("i_board");
 				String title = rs.getString("title");
-				String content = rs.getString("content");
+				
 				String regDateTime = rs.getString("regdatetime");
 				
-				BoardVo vo = new BoardVo(i_board, title, content, regDateTime);
+				BoardVo vo = new BoardVo(i_board, title, "", regDateTime);
 				list.add(vo);
 			}
 			
 		} catch (Exception e) {			
 			e.printStackTrace();
 		}finally {
-			
-
+			close(con, ps, rs);
 		}
 		
 		return list;
+	}
+	//글 디테일 가져오기
+	public static BoardVo getBoardDetail(int i_board) {
+		BoardVo vo = null;
+		String query = " SELECT * FROM t_board WHERE i_board = ? " ;
+		
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try {
+			con = getCon();
+			ps = con.prepareStatement(query);
+			ps.setInt(1, i_board);
+			rs = ps.executeQuery();
+			if(rs.next()) { //1개 가져올ㄸㅐ는 if문 괜찮				
+				String title = rs.getString("title");
+				String content = rs.getString("content");
+				String regDateTime = rs.getString("regdatetime");				
+				vo = new BoardVo(i_board, title, content, regDateTime);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			close(con,ps,rs);
+		}
+		return vo;
+		
 	}
 
 }
