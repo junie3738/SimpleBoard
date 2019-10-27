@@ -39,12 +39,12 @@ public class BoardVo { //Object 상속
 		this.i_board = i_board;
 	}
 	
-	public String getTilte() {
+	public String getTitle() {
 		return title;
 	}
 	
 
-	public void setTilte(String tilte) {
+	public void setTitle(String tilte) {
 		this.title = tilte;
 	}
 	public String getContent() {
