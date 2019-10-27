@@ -24,10 +24,11 @@
 			<th>제목</th>
 			<th>날짜</th>			
 		</tr>
+		<% if(data != null) %>
 		<% for(BoardVo vo : data) { %>
 		<tr>
 			<td><%=vo.getI_board() %></td>
-			<td><% out.print(vo.getTitle()); %></td>
+			<td><a href="detail?i_board=<%=vo.getI_board() %>"><% out.print(vo.getTitle()); %></a></td>
 			<td><%=vo.getRegDateTime() %> </td>	
 		</tr>
 		<% } %>		

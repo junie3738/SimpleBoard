@@ -28,13 +28,12 @@ public class BoardWriteServlet extends HttpServlet {
 
 		System.out.println("title : " + title);
 		System.out.println("content : " + content);
-		
-		
-		BoardVo vo = new BoardVo(title, content);	
-		
-		//일반변수를 제외하고 모두 주소값이다.
+
+		BoardVo vo = new BoardVo(title, content);
+
+		// 일반변수를 제외하고 모두 주소값이다.
 		int result = SBDao.insertBoard(vo);
 		response.sendRedirect("list");
-	}	
+	}
 
 }
