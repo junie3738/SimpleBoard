@@ -160,6 +160,29 @@ public class SBDao {
 
 		return result;
 	}
+	//글수정
+	public static int modBoard(BoardVo vo) {
+		int result =0; // 수정 실패값
+		Connection con = null;
+		PreparedStatement ps = null;
+		
+		String query = " UPDATE t_board SET title = ? , content = ? WHERE i_board = ? ";
+		try {
+			con = getCon();
+			ps = con.prepareStatement(query);
+			ps.setString(1, vo.getTitle());
+			ps.setString(2, vo.getContent());
+			ps.setInt(3, vo.getI_board());
+			result = ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();			
+		} finally {
+			close(con,ps);
+		}
+		
+		
+		return result;
+	}
 }
 
 /*
