@@ -3,6 +3,7 @@
 <%@ page import="com.kwon1.sb.*"%>
 <%
 	BoardVo vo = (BoardVo) request.getAttribute("vo");
+	String msg = (String)request.getAttribute("msg");
 %>
 <html>
 <head>
@@ -11,6 +12,9 @@
 </head>
 <body>
 	<h1>수정 화면</h1>
+	<% if(msg != null) { %>
+	<div><%=msg %></div>
+	<% } %>
 	<form action="mod" method="post">
 		<input type="hidden" value = "<%=vo.getI_board()%>" name=i_board>
 		<div>

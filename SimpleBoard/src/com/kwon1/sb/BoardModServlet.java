@@ -16,8 +16,11 @@ public class BoardModServlet extends HttpServlet {
 		String str_board = request.getParameter("i_board");
 		int i_board = Utils.parseStringToInt(str_board);
 		
-		BoardVo vo = SBDao.getBoardDetail(i_board);
+		BoardVo vo = (BoardVo)request.getAttribute("vo");
+		if(vo == null) {
+		vo = SBDao.getBoardDetail(i_board);
 		request.setAttribute("vo", vo);
+		}
 		
 		
 		request.getRequestDispatcher("WEB-INF/jsp/mod.jsp").forward(request, response);
@@ -30,6 +33,18 @@ public class BoardModServlet extends HttpServlet {
 		String content = request.getParameter("content");
 		
 		BoardVo vo = new BoardVo(i_board, title, content);
+		int result = SBDao.modBoard(vo);
+		if (result == 0) { //수정 실패( 수정화면으로 이동)
+			request.setAttribute("vo", vo);	
+			
+			request.setAttribute("msg", "수정을 실패하였습니다.");
+			
+			doGet(request, response);
+		}
+		else { //수정 완료 ( 디테일화면으로 이동)
+			response.sendRedirect("detail?i_board=" + str_board);
+		
+		}
 		
 		
 	}
