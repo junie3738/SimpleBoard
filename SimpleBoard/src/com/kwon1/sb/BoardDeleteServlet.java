@@ -17,6 +17,7 @@ public class BoardDeleteServlet extends HttpServlet {
 		int i_board = Utils.parseStringToInt(str); //3
 		if(i_board == 0) { 
 			//예외처리 나중에
+			response.sendRedirect("list");
 			return;
 		}
 		
@@ -24,6 +25,7 @@ public class BoardDeleteServlet extends HttpServlet {
 		
 		if(result == 0) {
 			//예외처리 나중에
+			response.sendRedirect("detail?err=1&i_board" + str);
 			return;
 		}
 		//삭제처리
