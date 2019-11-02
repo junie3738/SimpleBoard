@@ -135,7 +135,7 @@ public class SBDao {
 
 		return vo;
 	}
-
+	// 글삭제
 	public static int delBoard(int i_board) {
 		int result = 0; // 디폴트 삭제 못 했다
 
