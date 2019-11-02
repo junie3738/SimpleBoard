@@ -119,7 +119,7 @@ public class SBDao {
 
 		Connection con = null;
 		PreparedStatement ps = null;
-		ResultSet rs = null;
+		ResultSet rs = null; // select에만 쓰임
 
 		try {
 			con = getCon();
@@ -143,28 +143,39 @@ public class SBDao {
 	}
 
 	//글 삭제하기
-	public static BoardVo delBoard(int i_board) {
-		int result = 0;
-		BoardVo vo = null;
-		String query = " DELETE FROM t_board WHERE i_board = ? ";
-
-		Connection con = null;
+	/*
+	 * public static BoardVo delBoard(int i_board) { int result = 0; BoardVo vo =
+	 * null; String query = " DELETE FROM t_board WHERE i_board = ? ";
+	 * 
+	 * Connection con = null; PreparedStatement ps = null;
+	 * 
+	 * try { con = getCon(); ps = con.prepareStatement(query); ps.setInt(1,
+	 * i_board); result = ps.executeUpdate();
+	 * 
+	 * 
+	 * 
+	 * } catch (Exception e) { e.printStackTrace(); } finally { close(con, ps); }
+	 * return vo; }
+	 */
+	
+	public static int delBoard(int i_board) {
+		int result = 0;  //디폴트 삭제를 못했다.
+		Connection con = null; 
 		PreparedStatement ps = null;
 		
+		String query = " DELETE FROM t_board WHERE i_board = ? ";
 		try {
 			con = getCon();
 			ps = con.prepareStatement(query);
 			ps.setInt(1, i_board);
 			result = ps.executeUpdate();
-			
-			
-
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
+		}finally {
 			close(con, ps);
 		}
-		return vo;
+		//로직처리, 삭제가 잘됐다면 result = 1;
+		
+		return result;
 	}
-
 }
