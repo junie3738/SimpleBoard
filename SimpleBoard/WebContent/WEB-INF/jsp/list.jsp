@@ -23,6 +23,7 @@
 			<th>번호</th>
 			<th>제목</th>
 			<th>날짜</th>
+			<th>조회수</th>
 		</tr>
 		<% if(data != null) { %>
 			<% for(BoardVo vo : data) { %>
@@ -30,6 +31,7 @@
 					<td><%=vo.getI_board() %></td>
 					<td><a href="detail?i_board=<%=vo.getI_board()%>"><%=vo.getTitle() %></a></td>
 					<td><%=vo.getRegDateTime() %></td>
+					<td align = right><%=vo.getCnt() %></td>
 				</tr>				
 			<% } %>
 		<% } %>

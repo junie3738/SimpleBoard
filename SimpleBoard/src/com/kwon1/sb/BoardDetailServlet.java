@@ -16,20 +16,22 @@ public class BoardDetailServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String str_board = request.getParameter("i_board");
 		String err = request.getParameter("err");
-		
+		int i_board = Integer.parseInt(str_board);
 		if(err != null) {
 			switch(err) {
 			case "1": 
 				request.setAttribute("msg", "삭제오류가 발생하였습니다.");
 				break;
 			}
+		} else {
+			SBDao.plusCnt(i_board);
 		}
 		
 		
 		
 		
 		
-		int i_board = Integer.parseInt(str_board);
+		
 		BoardVo vo = SBDao.getBoardDetail(i_board);
 		request.setAttribute("vo", vo);
 		

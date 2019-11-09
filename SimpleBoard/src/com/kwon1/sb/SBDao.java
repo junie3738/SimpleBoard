@@ -56,7 +56,7 @@ public class SBDao {
 	// 글쓰기
 	public static int insertBoard(BoardVo vo) {
 		int result = 0;
-		String query = " INSERT INTO t_board" + " (title, content)" + " VALUES" + " (?, ?)";
+		String query = " INSERT INTO t_board(title, content) VALUES (?, ?)";
 		Connection con = null;
 		PreparedStatement ps = null;
 		try {
@@ -79,7 +79,7 @@ public class SBDao {
 	public static List<BoardVo> getBoardList() {
 		List<BoardVo> list = new ArrayList();
 
-		String query = " SELECT i_board, title, regdatetime FROM t_board ";
+		String query = " SELECT i_board, title, regdatetime, cnt FROM t_board ";
 
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -93,8 +93,9 @@ public class SBDao {
 				int i_board = rs.getInt("i_board");
 				String title = rs.getString("title");
 				String regDateTime = rs.getString("regdatetime");
+				int cnt = rs.getInt("cnt");
 
-				BoardVo vo = new BoardVo(i_board, title, "", regDateTime);
+				BoardVo vo = new BoardVo(i_board, title, "", regDateTime, cnt);
 				list.add(vo);
 			}
 
@@ -111,30 +112,45 @@ public class SBDao {
 	public static BoardVo getBoardDetail(int i_board) {
 		BoardVo vo = null;
 		String query = " SELECT * FROM t_board WHERE i_board = ? ";
+		
+		
+		//String qry = " update t_board set cnt = ? where i_board = ?";
 
 		Connection con = null;
 		PreparedStatement ps = null;
+		//PreparedStatement ptst = null;
 		ResultSet rs = null;
+		//int result = 0;
 
 		try {
-			con = getCon();
+			con = getCon();			
 			ps = con.prepareStatement(query);
+			//ptst = con.prepareStatement(qry);
 			ps.setInt(1, i_board);
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				String title = rs.getString("title");
 				String content = rs.getString("content");
 				String regDateTime = rs.getString("regdatetime");
-				vo = new BoardVo(i_board, title, content, regDateTime);
+				int cnt = rs.getInt("cnt");
+				vo = new BoardVo(i_board, title, content, regDateTime, cnt);
 			}
+			//ptst.setInt(1,vo.getCnt());
+			//ptst.setInt(2, i_board);
+			//result = ptst.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
+			/*
+			 * try { //ptst.close(); } catch (SQLException e) { // TODO Auto-generated catch
+			 * block e.printStackTrace(); }
+			 */
 			close(con, ps, rs);
 		}
 
 		return vo;
 	}
+
 	// 글삭제
 	public static int delBoard(int i_board) {
 		int result = 0; // 디폴트 삭제 못 했다
@@ -160,12 +176,13 @@ public class SBDao {
 
 		return result;
 	}
-	//글수정
+
+	// 글수정
 	public static int modBoard(BoardVo vo) {
-		int result =0; // 수정 실패값
+		int result = 0; // 수정 실패값
 		Connection con = null;
 		PreparedStatement ps = null;
-		
+
 		String query = " UPDATE t_board SET title = ? , content = ? WHERE i_board = ? ";
 		try {
 			con = getCon();
@@ -175,121 +192,30 @@ public class SBDao {
 			ps.setInt(3, vo.getI_board());
 			result = ps.executeUpdate();
 		} catch (Exception e) {
-			e.printStackTrace();			
+			e.printStackTrace();
+		} finally {
+			close(con, ps);
+		}
+
+		return result;
+	}
+	public static void plusCnt(int i_board) {
+		Connection con = null;
+		PreparedStatement ps = null;
+		
+		String query = " update t_board set cnt = cnt+1 where i_board = ? ";
+		
+		try {
+			con = getCon();
+			ps=con.prepareStatement(query);
+			ps.setInt(1, i_board);
+			ps.executeUpdate();
+			
+		} catch (Exception e) {			
+			e.printStackTrace();
 		} finally {
 			close(con,ps);
 		}
 		
-		
-		return result;
 	}
 }
-
-/*
- * import java.sql.*; import java.util.*;
- * 
- * public class SBDao {
- * 
- * public static void main(String[] args) { try { getCon(); } catch (Exception
- * e) { // TODO: handle exception e.printStackTrace(); }
- * 
- * }
- * 
- * private static Connection getCon() throws Exception { final String URL =
- * "jdbc:mysql://127.0.0.1:3306/jsp?characterEncoding=UTF-8&serverTimezone=UTC";
- * final String USER = "root"; final String PW = "1234";
- * Class.forName("com.mysql.cj.jdbc.Driver"); Connection con =
- * DriverManager.getConnection(URL, USER, PW); //System.out.println("성공");
- * return con;
- * 
- * }
- * 
- * private static void close(Connection con, PreparedStatement ps) { if (ps !=
- * null) { try { ps.close(); } catch (SQLException e) { e.printStackTrace(); } }
- * if (con != null) { try { con.close(); } catch (SQLException e) {
- * e.printStackTrace(); } }
- * 
- * }
- * 
- * private static void close(Connection con, PreparedStatement ps, ResultSet rs)
- * { if (rs != null) { try { rs.close(); } catch (SQLException e) {
- * e.printStackTrace(); } } close(con, ps);
- * 
- * }
- * 
- * // 글쓰기 public static int insertBoard(BoardVo vo) { int result = 0; String
- * query = " INSERT INTO t_board " + " (title, content) " + " VALUES " +
- * " (?, ?) "; Connection con = null; PreparedStatement ps = null; try { con =
- * getCon(); ps = con.prepareStatement(query); ps.setString(1, vo.getTitle());
- * ps.setString(2, vo.getContent()); result = ps.executeUpdate();
- * 
- * } catch (Exception e) { e.printStackTrace(); } finally { close(con, ps);
- * 
- * }
- * 
- * return result;
- * 
- * }
- * 
- * // 글 리스트 가져오기 public static List<BoardVo> getBoardList() { List<BoardVo> list
- * = new ArrayList();
- * 
- * String query = " SELECT i_board, title, regdatetime FROM t_board ";
- * 
- * Connection con = null; PreparedStatement ps = null; ResultSet rs = null; try
- * { con = getCon(); ps = con.prepareStatement(query); rs = ps.executeQuery();
- * while (rs.next()) { int i_board = rs.getInt("i_board"); String title =
- * rs.getString("title");
- * 
- * String regDateTime = rs.getString("regdatetime");
- * 
- * BoardVo vo = new BoardVo(i_board, title, "", regDateTime); list.add(vo); }
- * 
- * } catch (Exception e) { e.printStackTrace(); } finally { close(con, ps, rs);
- * }
- * 
- * return list; }
- * 
- * // 글 디테일 가져오기 public static BoardVo getBoardDetail(int i_board) { BoardVo vo
- * = null; String query = " SELECT * FROM t_board WHERE i_board = ? ";
- * 
- * Connection con = null; PreparedStatement ps = null; ResultSet rs = null; //
- * select에만 쓰임
- * 
- * try { con = getCon(); ps = con.prepareStatement(query); ps.setInt(1,
- * i_board); rs = ps.executeQuery(); if (rs.next()) { // 1개 가져올ㄸㅐ는 if문 괜찮 String
- * title = rs.getString("title"); String content = rs.getString("content");
- * String regDateTime = rs.getString("regdatetime"); vo = new BoardVo(i_board,
- * title, content, regDateTime); }
- * 
- * } catch (Exception e) { e.printStackTrace(); } finally { close(con, ps, rs);
- * } return vo;
- * 
- * }
- * 
- * //글 삭제하기
- * 
- * public static BoardVo delBoard(int i_board) { int result = 0; BoardVo vo =
- * null; String query = " DELETE FROM t_board WHERE i_board = ? ";
- * 
- * Connection con = null; PreparedStatement ps = null;
- * 
- * try { con = getCon(); ps = con.prepareStatement(query); ps.setInt(1,
- * i_board); result = ps.executeUpdate();
- * 
- * 
- * 
- * } catch (Exception e) { e.printStackTrace(); } finally { close(con, ps); }
- * return vo; }
- * 
- * 
- * public static int delBoard(int i_board) { int result = 0; //디폴트 삭제를 못했다.
- * Connection con = null; PreparedStatement ps = null;
- * 
- * String query = " DELETE FROM t_board WHERE i_board = ? "; try { con =
- * getCon(); ps = con.prepareStatement(query); ps.setInt(1, i_board); result =
- * ps.executeUpdate(); } catch (Exception e) { e.printStackTrace(); }finally {
- * close(con, ps); } //로직처리, 삭제가 잘됐다면 result = 1;
- * 
- * return result; } }
- */

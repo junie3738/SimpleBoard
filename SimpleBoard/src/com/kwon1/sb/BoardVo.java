@@ -5,6 +5,7 @@ public class BoardVo {
 	private String title;
 	private String content;
 	private String regDateTime;
+	private int cnt;
 	
 	
 	
@@ -12,18 +13,32 @@ public class BoardVo {
 		/*
 		 * this.title = title; this.content = content;
 		 */
-		this(0, title, content, null);
+		this(0, title, content, null,0);
 	}
 	
 	public BoardVo(int i_board, String title, String content) {
-		this(i_board, title, content, null);
+		this(i_board, title, content, null,0);
 	}
 	
 	public BoardVo(int i_board, String title, String content, String regDateTime) {	
+		this(i_board, title, content, regDateTime, 0);
+	}
+	public BoardVo(int i_board, String title, String content, String regDateTime, int cnt) {	
 		this.i_board = i_board;
 		this.title = title;
 		this.content = content;
 		this.regDateTime = regDateTime;
+		this.cnt = cnt;
+	}
+	
+	
+
+	public int getCnt() {
+		return cnt;
+	}
+
+	public void setCnt(int cnt) {
+		this.cnt = cnt;
 	}
 
 	public int getI_board() {
