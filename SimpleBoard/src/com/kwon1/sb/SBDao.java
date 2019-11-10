@@ -199,6 +199,8 @@ public class SBDao {
 
 		return result;
 	}
+	
+	//조회수 증가
 	public static void plusCnt(int i_board) {
 		Connection con = null;
 		PreparedStatement ps = null;

@@ -25,18 +25,24 @@ public class BoardDetailServlet extends HttpServlet {
 			}
 		} else {
 			SBDao.plusCnt(i_board);
-		}
-		
-		
-		
-		
-		
-		
+		}		
 		BoardVo vo = SBDao.getBoardDetail(i_board);
 		request.setAttribute("vo", vo);
 		
 		request.getRequestDispatcher("WEB-INF/jsp/detail.jsp").forward(request, response);
 	}	
+	//댓글 달기
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//request.setCharacterEncoding("UTF-8");
+		String str_board = request.getParameter("i_board");
+		
+		int i_board = Integer.parseInt(str_board);
+		String cmt = request.getParameter("comment");
+		
+		System.out.println("i_board : " + i_board);
+		System.out.println("cmt : " + cmt);
 
+	}
 }
 

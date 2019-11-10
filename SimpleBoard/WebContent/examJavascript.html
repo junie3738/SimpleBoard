@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>자바스크립트 연습</title>
+</head>
+<body>
+<div>
+<input type="text" id="num1">,
+ <input type="text" id="num2"> = 
+ <input type="text" id = "total">
+<br>
+<button onclick="sum()">더하기</button> 
+</div>
+<script>
+	function sum() {
+		var v1 = num1.value
+		var v2 = num2.value
+		total.value = parseInt(v1)+parseInt(v2)
+		alert('더하기!!');
+	}
+
+</script>
+</body>
+</html>
