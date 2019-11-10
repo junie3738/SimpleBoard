@@ -220,4 +220,82 @@ public class SBDao {
 		}
 		
 	}
+	
+	//댓글 달기
+	public static void insertComment(CommentVo vo) {
+		Connection con = null;
+		PreparedStatement ps = null;
+		String query = " insert into t_comment(i_board, cmt) values (?, ?)";
+		
+		try {
+			con = getCon();
+			ps = con.prepareStatement(query);
+			ps.setInt(1, vo.getI_board());
+			ps.setString(2, vo.getCmt());
+			ps.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, ps);
+		}
+		
+	}
+	
+	//댓글 가져오기
+	public static List<CommentVo> getComment(int i_board) {
+		List<CommentVo> list = new ArrayList();
+		String query = " SELECT * FROM t_comment WHERE i_board = ? order by i_comment desc ";
+
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			con = getCon();
+			ps = con.prepareStatement(query);
+			ps.setInt(1, i_board);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				CommentVo vo = new CommentVo();
+				vo.setI_comment(rs.getInt("i_comment"));
+				vo.setCmt(rs.getString("cmt"));
+				vo.setR_datetime(rs.getString("r_datetime"));
+				list.add(vo);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, ps, rs);
+		}
+	
+
+		return list;
+
+	}
+	
+	
+	//댓글 삭제
+	public static void delComment(int i_comment) {	
+
+		Connection con = null;
+		PreparedStatement ps = null;
+
+		String query = " DELETE FROM t_comment WHERE i_comment = ? ";
+
+		try {
+			con = getCon();
+			ps = con.prepareStatement(query);
+			ps.setInt(1, i_comment);
+			ps.executeUpdate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		} finally {
+			close(con, ps);
+		}
+	
+	}
+
+	
 }

@@ -1,9 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ page import="java.util.*"%>
 <%@ page import="com.kwon1.sb.*"%>
 <%
 	BoardVo vo = (BoardVo) request.getAttribute("vo");
 	String msg = (String) request.getAttribute("msg");
+	List<CommentVo> comment = (List<CommentVo>) request.getAttribute("comment");
 %>
 <!DOCTYPE html>
 <html>
@@ -26,6 +28,7 @@ th, td {
 </style>
 </head>
 <body>
+	<a href="list"><button>리스트로 돌아가기</button></a>
 	<%
 		if (vo == null) {
 	%>
@@ -65,22 +68,59 @@ th, td {
 		%>
 	</table>
 	<div>
-		<form action="detail" method="post">
-		<input type="text" name = "i_board" value = <%=vo.getI_board()%>>
+		<form action="detail" method="post" id = "frm" onsubmit="return check()">
+		<input type="hidden" name="i_comment" value = "0">
+			<input type="hidden" name="i_board" value="<%=vo.getI_board()%>">
 			<div>
-			
-				댓글 : <input type="text" name="comment"> 
-				<input type="submit" value="댓글달기">
+
+				댓글 : <input type="text" name="comment"> <input type="submit" value="댓글달기">
+
 			</div>
-		</form>
-	</div>
+			</form>
+			
+			<table>
+				<tr>
+					<th>번호</th>
+					<th>댓글</th>
+					<th>등록일시</th>
+					<th>삭제</th>
+				</tr>
+				<%
+					if (comment != null && comment.size() > 0) {
+				%>
+				<%
+					for (CommentVo cmtvo : comment) {
+				%>
+				<tr>
+					<td><%=cmtvo.getI_comment()%></td>
+					<td><%=cmtvo.getCmt()%></td>
+					<td><%=cmtvo.getR_datetime()%></td>
+					<td><button onclick = "delCmt(<%=cmtvo.getI_comment()%>)" >삭제</button></td>
+				</tr>
+				<%
+					}
+				%>
+				<%
+					}
+				%>
+			</table>
 
-
-
-
-
+			</div>
 	<%
 		}
 	%>
+	<script>
+	function delCmt(i_cmt){
+		frm.i_comment.value = i_cmt;
+		frm.submit();
+	}
+	function check() {
+		if(frm.comment.value=="") {
+			alert('댓글내용이 없습니다.');
+			frm.comment.focus();
+			return false;
+		}
+	}
+	</script>
 </body>
 </html>
